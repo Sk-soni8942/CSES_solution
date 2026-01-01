@@ -1,0 +1,99 @@
+//---------------------------------- CSES graph --------------------------------------------//
+// Q -> Shortest path ii
+// --------------------------hint ----------------------------
+// can you use Floyd Warshal Algo here to answer the queries ?
+
+
+//---------------------implementation(in C++ obiously)-------------------
+
+#include<bits/stdc++.h>
+using namespace std;
+
+vector<vector<long long >>Floyd_warshal(long long  n,vector<vector<long long>>&edges){
+    vector<vector<long long >>dist(n,vector<long long >(n,1e17));
+
+             for(int i = 0; i < n; i++){
+                  dist[i][i] = 0;
+             }
+
+             for(auto edge : edges){
+                int u = edge[0];
+                int v = edge[1];
+                int w = edge[2];
+                
+                dist[u][v] = min(dist[u][v],edge[2]);
+             }
+
+
+             for(int k = 0; k < n; k++){
+                for(int i = 0; i < n; i++){
+                    for(int j = 0; j < n; j++){
+                        if(dist[i][k] != INT_MAX && dist[k][j] != INT_MAX){
+                               dist[i][j] = min(dist[i][j],dist[i][k] + dist[k][j]);
+                        }
+                    }
+                }
+             }
+
+
+             for(int i = 0; i < n; i++){
+                if(dist[i][i] < 0){
+                    return {};
+                }
+             }
+   return dist;
+}
+
+   
+const int MOD = 1e9+7;
+     
+void solve(){
+    long long n,m,q;
+    cin >> n >> m >>q;
+    vector<vector<long long >>edges;
+    for(int i = 0; i < m; i++ ){
+          int u,v,w;
+          cin >> u >> v >> w;
+          u--,v--;
+         edges.push_back({u, v, w});
+         edges.push_back({v, u, w});
+
+    }
+
+     vector<vector<long long >>dist = Floyd_warshal(n,edges);
+     
+  if (dist.empty()) {
+        cout << "Negative cycle detected\n";
+        return;
+    }
+    
+    while(q--){
+        long long  x,y;
+        cin >> x >> y;
+        x--,y--;
+        if(dist[x][y] != 1e17){
+            cout<<dist[x][y]<<"\n";
+        }
+        else{
+            cout<<-1<<"\n";
+        }
+        
+        
+    }
+    
+
+    
+        
+}
+   
+int main(){
+ios::sync_with_stdio(false);
+ cin.tie(nullptr);
+int tt = 1;
+// cin>>tt;
+while(tt--)
+{
+solve();
+}
+return 0;
+}
